@@ -1,0 +1,39 @@
+{
+    "clientes" : [
+        {
+            "id": 1,
+            "nombre": "David",
+            "telefono": 64224268,
+            "email": "david@david.gmail",
+            "empresa": "Panama TIC inc."
+        },
+        {
+            "id": 2,
+            "nombre": "Josue",
+            "telefono": 622124268,
+            "email": "josue@josue.gmail",
+            "empresa": "Panama TIC inc."
+        },
+        {
+            "id": 3,
+            "nombre": "Adrian",
+            "telefono": 2127268,
+            "email": "adrian@adrian.gmail",
+            "empresa": "Panama TIC inc."
+        },
+        {
+            "id": 4,
+            "nombre": "Miguel",
+            "telefono": 319381983,
+            "email": "miguel@juan.com",
+            "empresa": "Codigo Con Juan"
+          },
+          {
+            "id": 5,
+            "nombre": "Pedro",
+            "telefono": 1398198938,
+            "email": "pedro@juan.com",
+            "empresa": "Codigo Con Juan"
+          }
+    ]
+}
