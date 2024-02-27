@@ -1,22 +1,31 @@
-import { useNavigate, Form, useActionData, redirect } from "react-router-dom"
+import { Form, useNavigate, useLoaderData, redirect } from "react-router-dom"
+import { obtenerCliente, actualizarCliente } from "../data/clientes"
 import Formulario from "../components/Formulario"
 import Error from "../components/Error"
-import { agregarClientes } from "../data/clientes"
 
-export async function action({ request }) {
+export async function loader({ params }) {
+   const cliente = await obtenerCliente(params.clienteId)
+   if (Object.values(cliente).length === 0) {
+      throw new Response('', {
+         status: 404,
+         statusText: 'El cliente no fue encontrado'
+      })
+   }
+   return cliente
+}
+
+export async function action({ request, params }) {
    const formData = await request.formData()
    const datos = Object.fromEntries(formData)
    const email = formData.get('email')
 
    // Validacion de datos
    const errores = []
-
    if (Object.values(datos).includes('')) {
       errores.push('Todos los campos son obligatorios')
    }
 
    let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
-
    if (!regex.test(email)) {
       errores.push('El email no es válido')
    }
@@ -26,19 +35,20 @@ export async function action({ request }) {
       return errores;
    }
 
-   await agregarClientes(datos)
-   return  redirect('/')
+   // Actualizar cliente
+   await actualizarCliente(params.clienteId, datos)
+   return redirect('/')
 }
 
-const NuevoCLiente = () => {
 
-   const errores = useActionData()
+function EditarCliente() {
    const navigate = useNavigate()
+   const cliente = useLoaderData()
 
    return (
       <>
-         <h1 className="font-black text-4xl text-blue-900">CLientes</h1>
-         <p className="mt-3">Llena todos los campos para registrar un nuevo cliente</p>
+         <h1 className="font-black text-4xl text-blue-900">Editar CLiente</h1>
+         <p className="mt-3">A continuacióń podras modificar los datos de un cliente</p>
 
          <div className='flex justify-end'>
             <button
@@ -58,12 +68,14 @@ const NuevoCLiente = () => {
                method="post"
                noValidate
             >
-               <Formulario />
+               <Formulario
+                  cliente={cliente}
+               />
 
                <input
                   type="submit"
                   className="bg-blue-800 w-full p-3 text-white uppercase font-bold hover:bg-blue-700 cursor-pointer"
-                  value={"Registrar Cliente"}
+                  value="Guardar Cambios"              
                />
             </Form>
          </div>
@@ -71,4 +83,4 @@ const NuevoCLiente = () => {
    )
 }
 
-export default NuevoCLiente
+export default EditarCliente
